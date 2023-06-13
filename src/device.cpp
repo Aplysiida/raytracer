@@ -128,12 +128,12 @@ void create_or_check_capacity_of_temp_buffer(ID3D12Resource*** temp_buffer, UINT
 }
 
 //parse image then upload to GPU assuming 1 1024x1024 RGBA image with no additional mipmaps
-ID3D12Resource* create_texture(ID3D12GraphicsCommandList* cmd_list, char* filepath, D3D12_CPU_DESCRIPTOR_HANDLE desc_heap_handle) {
+ID3D12Resource* create_texture(ID3D12GraphicsCommandList* cmd_list, char* filepath) {
     //load file
     int height = 1024, width = 1024, channel_num = 4; //4 channels RGBA
-    //unsigned char *img_data = stbi_load(filepath, &width, &height, &channel_num, channel_num);
+    unsigned char *img_data = stbi_load(filepath, &width, &height, &channel_num, channel_num);
     //unsigned char* img_data = ;// malloc(height * height * channel_num * sizeof(unsigned char));
-    std::vector<unsigned char> img_data = std::vector<unsigned char>(width * height * channel_num, '\0');
+    //std::vector<unsigned char> img_data = std::vector<unsigned char>(width * height * channel_num, '\0');
     //texture description
     D3D12_RESOURCE_DESC tex_desc = {0};
     tex_desc.MipLevels = 1;
@@ -169,7 +169,7 @@ ID3D12Resource* create_texture(ID3D12GraphicsCommandList* cmd_list, char* filepa
 
     //define subresources
     D3D12_SUBRESOURCE_DATA tex_subresources = {};
-    tex_subresources.pData = img_data.data();
+    tex_subresources.pData = img_data;
     tex_subresources.RowPitch = static_cast<LONG_PTR>((4 * width));; //width
     tex_subresources.SlicePitch = tex_subresources.RowPitch*height;  //height
 

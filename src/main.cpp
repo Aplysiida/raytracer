@@ -35,7 +35,7 @@ UINT  g_width;
 UINT  g_height;
 float g_aspect;
 
-ID3D12CommandQueue*     g_cmd_queue     = NULL;
+ID3D12CommandQueue* g_cmd_queue = NULL;
 ID3D12CommandAllocator* g_cmd_allocator = NULL;
 
 IDXGISwapChain4* g_swapchain = NULL;
@@ -58,22 +58,22 @@ void update_resolution() {
     { // get client area
         RECT rect;
         GetClientRect(g_hwnd, &rect);
-        g_width  = rect.right;
+        g_width = rect.right;
         g_height = rect.bottom;
-        g_aspect = (float) g_width / (float) g_height;
+        g_aspect = (float)g_width / (float)g_height;
         g_do_reset_accumulator = true;
     }
 
     if (!g_swapchain) {
         DXGI_SWAP_CHAIN_DESC1 g_swapchain_desc = {};
-        g_swapchain_desc.Format             = PIXEL_FORMAT;
-        g_swapchain_desc.SwapEffect         = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-        g_swapchain_desc.BufferUsage        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        g_swapchain_desc.BufferCount        = SWAPCHAIN_BUFFER_COUNT;
-        g_swapchain_desc.SampleDesc.Count   = 1;
+        g_swapchain_desc.Format = PIXEL_FORMAT;
+        g_swapchain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+        g_swapchain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        g_swapchain_desc.BufferCount = SWAPCHAIN_BUFFER_COUNT;
+        g_swapchain_desc.SampleDesc.Count = 1;
         g_swapchain_desc.SampleDesc.Quality = 0;
-        g_swapchain_desc.Scaling            = DXGI_SCALING_NONE;
-        g_swapchain_desc.AlphaMode          = DXGI_ALPHA_MODE_UNSPECIFIED;
+        g_swapchain_desc.Scaling = DXGI_SCALING_NONE;
+        g_swapchain_desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 
         IDXGISwapChain1* swapchain1 = NULL;
         CHECK_RESULT(Device::g_dxgi_factory->CreateSwapChainForHwnd(
@@ -83,7 +83,8 @@ void update_resolution() {
         ));
         CHECK_RESULT(swapchain1->QueryInterface(IID_PPV_ARGS(&g_swapchain)));
         swapchain1->Release(); // QueryInterface increments ref count
-    } else {
+    }
+    else {
         // release rtv references
         for (UINT i = 0; i < SWAPCHAIN_BUFFER_COUNT; i++) {
             g_rtvs[i]->Release();
@@ -115,31 +116,31 @@ LRESULT CALLBACK WindowProc(
     if (ImGui_ImplWin32_WndProcHandler(g_hwnd, msg, wp, lp)) return 0;
 
     switch (msg) {
-        case WM_DESTROY: {
-            PostQuitMessage(0);
-            return 0;
-        } break;
+    case WM_DESTROY: {
+        PostQuitMessage(0);
+        return 0;
+    } break;
 
-        case WM_SIZE: {
-            // TODO: verify thread safety
-            g_do_update_resolution = true;
-            return 0;
-        } break;
+    case WM_SIZE: {
+        // TODO: verify thread safety
+        g_do_update_resolution = true;
+        return 0;
+    } break;
 
-        case WM_GETMINMAXINFO: {
-            RECT rect = {};
-            rect.right  = MIN_RESOLUTION;
-            rect.bottom = MIN_RESOLUTION;
-            AdjustWindowRectEx(&rect, WINDOW_STYLE, WINDOW_MENU, WINDOW_STYLE_EX);
+    case WM_GETMINMAXINFO: {
+        RECT rect = {};
+        rect.right = MIN_RESOLUTION;
+        rect.bottom = MIN_RESOLUTION;
+        AdjustWindowRectEx(&rect, WINDOW_STYLE, WINDOW_MENU, WINDOW_STYLE_EX);
 
-            LPMINMAXINFO info = (LPMINMAXINFO) lp;
-            info->ptMinTrackSize.x = rect.right;
-            info->ptMinTrackSize.y = rect.bottom;
-        }
+        LPMINMAXINFO info = (LPMINMAXINFO)lp;
+        info->ptMinTrackSize.x = rect.right;
+        info->ptMinTrackSize.y = rect.bottom;
+    }
 
-        default: {
-            return DefWindowProc(g_hwnd, msg, wp, lp);
-        } break;
+    default: {
+        return DefWindowProc(g_hwnd, msg, wp, lp);
+    } break;
     }
 }
 
@@ -158,7 +159,7 @@ int WINAPI wWinMain(
         wc.lpszClassName = L"RaytracerWindowClass";
 
         RECT rect = {};
-        rect.right  = 1600;
+        rect.right = 1600;
         rect.bottom = 900;
         AdjustWindowRectEx(&rect, WINDOW_STYLE, WINDOW_MENU, WINDOW_STYLE_EX);
 
@@ -167,7 +168,7 @@ int WINAPI wWinMain(
             WINDOW_STYLE_EX,
             wc.lpszClassName, L"Raytracer",
             WINDOW_STYLE,
-            CW_USEDEFAULT, CW_USEDEFAULT, rect.right-rect.left, rect.bottom-rect.top,
+            CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
             NULL, WINDOW_MENU, hInstance, NULL
         );
     }
@@ -181,7 +182,7 @@ int WINAPI wWinMain(
     { // g_cmd_queue
         D3D12_COMMAND_QUEUE_DESC g_cmd_queue_desc = {};
         g_cmd_queue_desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-        g_cmd_queue_desc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
+        g_cmd_queue_desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
         CHECK_RESULT(g_device->CreateCommandQueue(&g_cmd_queue_desc, IID_PPV_ARGS(&g_cmd_queue)));
     }
@@ -191,7 +192,7 @@ int WINAPI wWinMain(
 
     { // g_rtv_descriptor_heap
         D3D12_DESCRIPTOR_HEAP_DESC g_rtv_descriptor_heap_desc = {};
-        g_rtv_descriptor_heap_desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+        g_rtv_descriptor_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
         g_rtv_descriptor_heap_desc.NumDescriptors = SWAPCHAIN_BUFFER_COUNT;
 
         CHECK_RESULT(g_device->CreateDescriptorHeap(&g_rtv_descriptor_heap_desc, IID_PPV_ARGS(&g_rtv_descriptor_heap)));
@@ -202,7 +203,7 @@ int WINAPI wWinMain(
 
     { // g_descriptor_heap
         D3D12_DESCRIPTOR_HEAP_DESC g_descriptor_heap_desc = {};
-        g_descriptor_heap_desc.Type  = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+        g_descriptor_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
         g_descriptor_heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
         g_descriptor_heap_desc.NumDescriptors = DESCRIPTORS_COUNT;
         CHECK_RESULT(g_device->CreateDescriptorHeap(&g_descriptor_heap_desc, IID_PPV_ARGS(&g_descriptor_heap)));
@@ -243,34 +244,33 @@ int WINAPI wWinMain(
     Blas cornell_blas; {
         Array<GeometryInstance> geometries = {};
         Array<Array<Vertex>> all_vertices = {};
-        Array<Array<Index>>  all_indices  = {};
+        Array<Array<Index>>  all_indices = {};
         //Array<std::unique_ptr<uint8_t[]>> all_textures = {};
 
         Array<MeshFilePaths> files = {};
-        array_push(&files, MeshFilePaths{ "data/cornell/luminaire.obj", ""});
-        mesh_load(files, cornell_aabb, Material{Shader::Light, { 50.0, 50.0, 50.0 }}, geometries, all_vertices, all_indices);
-        
+        array_push(&files, MeshFilePaths{ "data/cornell/luminaire.obj", "" });
+        mesh_load(files, cornell_aabb, Material{ Shader::Light, { 50.0, 50.0, 50.0 } }, geometries, all_vertices, all_indices);
+
         files = {};
         array_push(&files, MeshFilePaths{ "data/cornell/floor.obj", "" });
         array_push(&files, MeshFilePaths{ "data/cornell/back.obj", "" });
         array_push(&files, MeshFilePaths{ "data/cornell/ceiling.obj", "" });
-        mesh_load(files, cornell_aabb, Material{Shader::Lambert, { 1.0, 1.0, 1.0 }}, geometries, all_vertices, all_indices);
+        mesh_load(files, cornell_aabb, Material{ Shader::Lambert, { 1.0, 1.0, 1.0 } }, geometries, all_vertices, all_indices);
 
         files = {};
         array_push(&files, MeshFilePaths{ "data/cornell/redwall.obj", "" });
-        mesh_load(files, cornell_aabb, Material{Shader::Lambert, { 1.0, 0.0, 0.0 }}, geometries, all_vertices, all_indices);
+        mesh_load(files, cornell_aabb, Material{ Shader::Lambert, { 1.0, 0.0, 0.0 } }, geometries, all_vertices, all_indices);
 
         files = {};
         array_push(&files, MeshFilePaths{ "data/cornell/greenwall.obj", "" });
-        mesh_load(files, cornell_aabb, Material{Shader::Lambert, { 0.0, 1.0, 0.0 }}, geometries, all_vertices, all_indices);
-        
+        mesh_load(files, cornell_aabb, Material{ Shader::Lambert, { 0.0, 1.0, 0.0 } }, geometries, all_vertices, all_indices);
+
         files = {};
         //for now assume if mtl exists there's only one obj being loaded
         array_push(&files, MeshFilePaths{ "data/tex/sphere_tex.obj", "data/tex/sphere_tex.mtl" });
-        mesh_load(files, cornell_aabb, Material{Shader::Lambert, { 1.0, 1.0, 1.0 }}, geometries, all_vertices, all_indices);
+        mesh_load(files, cornell_aabb, Material{ Shader::Translucent, { 1.0, 0.0, 1.0 } }, geometries, all_vertices, all_indices);
 
-        D3D12_CPU_DESCRIPTOR_HANDLE desc_heap_handle;// (g_descriptor_heap->GetCPUDescriptorHandleForHeapStart());
-        cornell_blas = Raytracing::build_blas(cmd_list, geometries, desc_heap_handle);
+        cornell_blas = Raytracing::build_blas(cmd_list, geometries);
 
         for (auto& v : all_vertices) array_free(&v); array_free(&all_vertices);
         for (auto& i : all_indices)  array_free(&i); array_free(&all_indices);
@@ -279,13 +279,13 @@ int WINAPI wWinMain(
 
         // append instance
         BlasInstance instance = {};
-        instance.blas        = &cornell_blas;
+        instance.blas = &cornell_blas;
 
         float scale = 1.0 / aabb_widest(cornell_aabb);
         XMMATRIX transform = XMMatrixAffineTransformation(
             XMVectorReplicate(scale),
             g_XMZero, g_XMIdentityR3,
-            (0.5*(cornell_aabb.min - cornell_aabb.max) - cornell_aabb.min) * scale
+            (0.5 * (cornell_aabb.min - cornell_aabb.max) - cornell_aabb.min) * scale
         );
         XMStoreFloat4x4(&instance.transform, transform);
 
@@ -297,14 +297,14 @@ int WINAPI wWinMain(
     array_free(&instances);
 
     CHECK_RESULT(cmd_list->Close());
-    g_cmd_queue->ExecuteCommandLists(1, (ID3D12CommandList**) &cmd_list);
+    g_cmd_queue->ExecuteCommandLists(1, (ID3D12CommandList**)&cmd_list);
     Fence::increment_and_signal_and_wait(g_cmd_queue, &g_fence);
     Device::release_temp_resources();
 
     // initialize globals
     Raytracing::g_globals.frame_rng = GetTickCount64(); // initialize random seed
 
-    Raytracing::g_globals.samples_per_pixel  = 1;
+    Raytracing::g_globals.samples_per_pixel = 1;
     Raytracing::g_globals.bounces_per_sample = 4;
 
     Raytracing::g_globals.translucent_bssrdf_scale = 0.4;
@@ -355,8 +355,8 @@ int WINAPI wWinMain(
         float    mouse_scroll = 0;
         if (!io.WantCaptureMouse) {
             if (ImGui::IsMouseDragging(0)) {
-                mouse_drag.x = (float) io.MouseDelta.x / (float) g_width;
-                mouse_drag.y =-(float) io.MouseDelta.y / (float) g_width;
+                mouse_drag.x = (float)io.MouseDelta.x / (float)g_width;
+                mouse_drag.y = -(float)io.MouseDelta.y / (float)g_width;
                 g_do_reset_accumulator = true;
             }
             if (io.MouseWheel) {
@@ -377,41 +377,48 @@ int WINAPI wWinMain(
         { // camera
             ImGui::Text("camera");
 
-            static float azimuth   = 0;
+            static float azimuth = 0;
             static float elevation = 0;
-            static float distance  = 2;
+            static float distance = 2;
             static float target[3] = {};
-            static float fov_x     = 70*DEGREES;
-            static float fov_y     = fov_x / g_aspect;
+            static float fov_x = 70 * DEGREES;
+            static float fov_y = fov_x / g_aspect;
 
-            g_do_reset_accumulator |= ImGui::SliderAngle("azimuth##camera",   &azimuth);
-            azimuth += mouse_drag.x * TAU/2;
-            azimuth = fmod(azimuth + 3*TAU/2, TAU) - TAU/2;
+            g_do_reset_accumulator |= ImGui::SliderAngle("azimuth##camera", &azimuth);
+            azimuth += mouse_drag.x * TAU / 2;
+            azimuth = fmod(azimuth + 3 * TAU / 2, TAU) - TAU / 2;
 
             g_do_reset_accumulator |= ImGui::SliderAngle("elevation##camera", &elevation, -85, 85);
-            elevation -= mouse_drag.y * TAU/2;
-            elevation = clamp(elevation, -85*DEGREES, 85*DEGREES);
+            elevation -= mouse_drag.y * TAU / 2;
+            elevation = clamp(elevation, -85 * DEGREES, 85 * DEGREES);
 
-            g_do_reset_accumulator |= ImGui::DragFloat("distance##camera", &distance, distance*0.005, 0.001, FLT_MAX);
-            distance -= mouse_scroll*distance*0.05;
+            g_do_reset_accumulator |= ImGui::DragFloat("distance##camera", &distance, distance * 0.005, 0.001, FLT_MAX);
+            distance -= mouse_scroll * distance * 0.05;
             distance = clamp(distance, 0.005, INFINITY);
 
             g_do_reset_accumulator |= ImGui::SliderFloat3("focus##camera", target, -1, 1);
 
-            if (ImGui::SliderAngle("fov x##camera", &fov_x, 5,          175))          { fov_y = fov_x / g_aspect; g_do_reset_accumulator = true; }
-            if (ImGui::SliderAngle("fov y##camera", &fov_y, 5/g_aspect, 175/g_aspect)) { fov_x = fov_y * g_aspect; g_do_reset_accumulator = true; }
+            if (ImGui::SliderAngle("fov x##camera", &fov_x, 5, 175)) { fov_y = fov_x / g_aspect; g_do_reset_accumulator = true; }
+            if (ImGui::SliderAngle("fov y##camera", &fov_y, 5 / g_aspect, 175 / g_aspect)) { fov_x = fov_y * g_aspect; g_do_reset_accumulator = true; }
 
-            XMVECTOR focus = XMLoadFloat3((XMFLOAT3*) target);
+            XMVECTOR focus = XMLoadFloat3((XMFLOAT3*)target);
             XMVECTOR camera_pos = focus + XMVectorSet(
                 -sinf(azimuth) * cosf(elevation) * distance,
                 -cosf(azimuth) * cosf(elevation) * distance,
-                                 sinf(elevation) * distance,
+                sinf(elevation) * distance,
                 1
             );
             Raytracing::g_globals.camera_aspect = g_aspect;
-            Raytracing::g_globals.camera_focal_length = 1 / tanf(fov_y/2);
+            Raytracing::g_globals.camera_focal_length = 1 / tanf(fov_y / 2);
             XMMATRIX view = XMMatrixLookAtRH(camera_pos, focus, g_XMIdentityR2);
             XMStoreFloat4x4(&Raytracing::g_globals.camera_to_world, XMMatrixInverse(NULL, view));
+        }
+
+        { // microfacet material
+            ImGui::Separator();
+            ImGui::Text("material"); ImGui::SameLine();
+
+            g_do_reset_accumulator |= ImGui::SliderFloat("roughness##material", &Raytracing::g_globals.mat_roughness, 0.01, 1.0, "%.3f");
         }
 
         { // translucent material
@@ -421,7 +428,7 @@ int WINAPI wWinMain(
 
             static float scale = Raytracing::g_globals.translucent_bssrdf_scale;
             if (ImGui::RadioButton("tabulated", Raytracing::g_globals.translucent_bssrdf_scale != 0)) { Raytracing::g_globals.translucent_bssrdf_scale = scale; g_do_reset_accumulator = true; }; ImGui::SameLine();
-            if (ImGui::RadioButton("dipole",    Raytracing::g_globals.translucent_bssrdf_scale == 0)) { Raytracing::g_globals.translucent_bssrdf_scale = 0;     g_do_reset_accumulator = true; };
+            if (ImGui::RadioButton("dipole", Raytracing::g_globals.translucent_bssrdf_scale == 0)) { Raytracing::g_globals.translucent_bssrdf_scale = 0;     g_do_reset_accumulator = true; };
 
             g_do_reset_translucent_accumulator |= ImGui::SliderFloat("refractive index##translucent", &Raytracing::g_globals.translucent_refractive_index, 1.0, 5.0, "%.3f", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_AlwaysClamp);
 
@@ -431,7 +438,8 @@ int WINAPI wWinMain(
                 g_do_reset_accumulator |= ImGui::SliderFloat("bssrdf fudge##translucent", &Raytracing::g_globals.translucent_bssrdf_fudge, 0.0, 10000, "%.3f", ImGuiSliderFlags_Logarithmic);
                 Raytracing::g_globals.translucent_bssrdf_scale = max(FLT_EPSILON, Raytracing::g_globals.translucent_bssrdf_scale);
                 scale = Raytracing::g_globals.translucent_bssrdf_scale;
-            } else {
+            }
+            else {
                 // dipole
                 g_do_reset_accumulator |= ImGui::SliderFloat("scattering##translucent", &Raytracing::g_globals.translucent_scattering, 0, 1000, "%.3f", ImGuiSliderFlags_Logarithmic);
                 g_do_reset_accumulator |= ImGui::SliderFloat("absorption##translucent", &Raytracing::g_globals.translucent_absorption, 0, 1000, "%.3f", ImGuiSliderFlags_Logarithmic);
@@ -457,7 +465,7 @@ int WINAPI wWinMain(
             ImGui::Separator();
             ImGui::Text("renderer");
 
-            int set_resolution[2] = { (int) g_width, (int) g_height };
+            int set_resolution[2] = { (int)g_width, (int)g_height };
             if (ImGui::InputInt2("resolution", set_resolution, ImGuiInputTextFlags_EnterReturnsTrue)) {
                 g_do_reset_accumulator = true;
 
@@ -466,14 +474,14 @@ int WINAPI wWinMain(
 
                 RECT rect;
                 GetWindowRect(g_hwnd, &rect);
-                rect.right  = rect.left + set_resolution[0];
-                rect.bottom = rect.top  + set_resolution[1];
+                rect.right = rect.left + set_resolution[0];
+                rect.bottom = rect.top + set_resolution[1];
                 AdjustWindowRectEx(&rect, WINDOW_STYLE, WINDOW_MENU, WINDOW_STYLE_EX);
-                MoveWindow(g_hwnd, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, true);
+                MoveWindow(g_hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, true);
             }
 
-            g_do_reset_accumulator |= ImGui::SliderInt("samples##render", (int*) &Raytracing::g_globals.samples_per_pixel,  1, 64, "%d", ImGuiSliderFlags_AlwaysClamp);
-            g_do_reset_accumulator |= ImGui::SliderInt("bounces##render", (int*) &Raytracing::g_globals.bounces_per_sample, 0, 16, "%d", ImGuiSliderFlags_AlwaysClamp);
+            g_do_reset_accumulator |= ImGui::SliderInt("samples##render", (int*)&Raytracing::g_globals.samples_per_pixel, 1, 64, "%d", ImGuiSliderFlags_AlwaysClamp);
+            g_do_reset_accumulator |= ImGui::SliderInt("bounces##render", (int*)&Raytracing::g_globals.bounces_per_sample, 0, 16, "%d", ImGuiSliderFlags_AlwaysClamp);
 
             static bool accumulator = true;
             ImGui::Checkbox("sample accumulation##render", &accumulator);
@@ -490,7 +498,7 @@ int WINAPI wWinMain(
             Raytracing::update_descriptors({ g_descriptor_heap, RAYTRACING_DESCRIPTOR_INDEX });
 
             CHECK_RESULT(cmd_list->Close());
-            g_cmd_queue->ExecuteCommandLists(1, (ID3D12CommandList**) &cmd_list);
+            g_cmd_queue->ExecuteCommandLists(1, (ID3D12CommandList**)&cmd_list);
             Fence::increment_and_signal_and_wait(g_cmd_queue, &g_fence);
             Device::release_temp_resources();
 
@@ -503,7 +511,7 @@ int WINAPI wWinMain(
         g_do_reset_accumulator |= g_do_reset_translucent_accumulator;
         g_do_reset_translucent_accumulator = false;
 
-        if (g_do_reset_accumulator) Raytracing::g_globals.accumulator_count  = 0;
+        if (g_do_reset_accumulator) Raytracing::g_globals.accumulator_count = 0;
         g_do_reset_accumulator = false;
 
         // RENDER
@@ -536,19 +544,19 @@ int WINAPI wWinMain(
                 do_capture = false;
                 g_prevent_resizing += 1;
 
-                capture_readback_buffer_pitch = round_up(g_width*4, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+                capture_readback_buffer_pitch = round_up(g_width * 4, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
 
                 D3D12_RESOURCE_DESC resource_desc = {};
-                resource_desc.Dimension          = D3D12_RESOURCE_DIMENSION_BUFFER;
-                resource_desc.Format             = DXGI_FORMAT_UNKNOWN;
-                resource_desc.Width              = capture_readback_buffer_pitch*g_height;
-                resource_desc.Height             = 1;
-                resource_desc.DepthOrArraySize   = 1;
-                resource_desc.MipLevels          = 1;
-                resource_desc.SampleDesc.Count   = 1;
+                resource_desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+                resource_desc.Format = DXGI_FORMAT_UNKNOWN;
+                resource_desc.Width = capture_readback_buffer_pitch * g_height;
+                resource_desc.Height = 1;
+                resource_desc.DepthOrArraySize = 1;
+                resource_desc.MipLevels = 1;
+                resource_desc.SampleDesc.Count = 1;
                 resource_desc.SampleDesc.Quality = 0;
-                resource_desc.Layout             = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-                resource_desc.Flags              = D3D12_RESOURCE_FLAG_NONE;
+                resource_desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+                resource_desc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
                 CHECK_RESULT(g_device->CreateCommittedResource(
                     &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK), D3D12_HEAP_FLAG_NONE,
@@ -560,17 +568,17 @@ int WINAPI wWinMain(
 
                 D3D12_TEXTURE_COPY_LOCATION dst = {};
                 dst.pResource = capture_readback_buffer;
-                dst.Type      = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-                dst.PlacedFootprint.Offset             = 0;
-                dst.PlacedFootprint.Footprint.Format   = PIXEL_FORMAT;
-                dst.PlacedFootprint.Footprint.Width    = g_width;
-                dst.PlacedFootprint.Footprint.Height   = g_height;
-                dst.PlacedFootprint.Footprint.Depth    = 1;
+                dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+                dst.PlacedFootprint.Offset = 0;
+                dst.PlacedFootprint.Footprint.Format = PIXEL_FORMAT;
+                dst.PlacedFootprint.Footprint.Width = g_width;
+                dst.PlacedFootprint.Footprint.Height = g_height;
+                dst.PlacedFootprint.Footprint.Depth = 1;
                 dst.PlacedFootprint.Footprint.RowPitch = capture_readback_buffer_pitch;
 
                 D3D12_TEXTURE_COPY_LOCATION src = {};
                 src.pResource = Raytracing::g_render_target;
-                src.Type      = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+                src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
                 src.SubresourceIndex = 0;
 
                 cmd_list->CopyTextureRegion(
@@ -578,7 +586,8 @@ int WINAPI wWinMain(
                     &src, NULL
                 );
                 // wait until next frame for copy to complete
-            } else if (capture_readback_buffer) {
+            }
+            else if (capture_readback_buffer) {
                 // write file from readback buffer and release it
                 static_assert(PIXEL_FORMAT == DXGI_FORMAT_R8G8B8A8_UNORM, "");
 
@@ -601,7 +610,7 @@ int WINAPI wWinMain(
             }
 
             bool capture_updated = false;
-            capture_updated |= ImGui::SliderInt("samples##capture", (int*) &capture_samples, Raytracing::g_globals.samples_per_pixel, 32768, "%d", ImGuiSliderFlags_AlwaysClamp);
+            capture_updated |= ImGui::SliderInt("samples##capture", (int*)&capture_samples, Raytracing::g_globals.samples_per_pixel, 32768, "%d", ImGuiSliderFlags_AlwaysClamp);
             capture_samples = round_up(ensure_unsigned(capture_samples), Raytracing::g_globals.samples_per_pixel);
 
             capture_updated |= ImGui::Checkbox("capture", &do_capture);
@@ -627,7 +636,7 @@ int WINAPI wWinMain(
         CHECK_RESULT(cmd_list->Close());
 
         // execute
-        g_cmd_queue->ExecuteCommandLists(1, (ID3D12CommandList**) &cmd_list);
+        g_cmd_queue->ExecuteCommandLists(1, (ID3D12CommandList**)&cmd_list);
 
         CHECK_RESULT(g_swapchain->Present(VSYNC, 0));
     }

@@ -19,9 +19,10 @@ __declspec(align(32)) struct ShaderRecord {
 
 enum Shader {
     Lambert = 0,
+    Cook,
     Light,
     Translucent,
-
+    
     Count,
 };
 
@@ -74,7 +75,6 @@ UINT update_descriptors(DescriptorHandle dest_array);
 Blas build_blas(
     ID3D12GraphicsCommandList4* cmd_list,
     ArrayView<GeometryInstance> geometries,
-    D3D12_CPU_DESCRIPTOR_HANDLE desc_heap_handle,
     Array<ID3D12Resource*>* temp_resources = NULL
 );
 

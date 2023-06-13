@@ -119,6 +119,9 @@ struct RaytracingGlobals {
     COMMON_FLOAT    camera_aspect;
     COMMON_FLOAT    camera_focal_length;
 
+    //material
+    COMMON_FLOAT    mat_roughness;
+
     // translucent
     COMMON_UINT     translucent_accumulator_count;
     COMMON_UINT     translucent_instance_stride;
@@ -268,6 +271,7 @@ inline float2 get_barycentrics(Vertex verts[3], float3 position) {
 #define TAU  6.28318530717958647692528676655900577
 #define TAUf 6.28318530717958647692528676655900577f
 #define DEGREES (TAU / 360)
+#define PIf  3.14159265f;
 
 #ifdef HLSL
 #define INFINITY (1.0 / 0.0)
