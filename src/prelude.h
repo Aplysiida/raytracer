@@ -140,7 +140,6 @@ struct RaytracingGlobals {
 struct RaytracingLocals {
     COMMON_FLOAT3 color;
     COMMON_INT    translucent_id;
-    //UINT64   texture; //D3D12_GPU_VIRTUAL_ADDRESS    figure out how to add SRV here
 };
 
 struct TranslucentProperties {

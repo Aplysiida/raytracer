@@ -28,9 +28,7 @@ GlobalRootSignature global_root_signature = {    // SLOT : RESOURCE
 
     // static samplers
     "StaticSampler(s0, addressU=TEXTURE_ADDRESS_BORDER, borderColor=STATIC_BORDER_COLOR_OPAQUE_BLACK)," // BssrdfSampler
-        /*
-    * "StaticSampler(s1, filter=MIN_MAG_MIP_LINEAR, addressU=Wrap, addressV=Wrap)," //texture sampler
-    */
+    "StaticSampler(s1, filter=FILTER_MIN_MAG_MIP_LINEAR, addressU=TEXTURE_ADDRESS_WRAP, addressV=TEXTURE_ADDRESS_WRAP)," //texture sampler
 };
 
 ConstantBuffer<RaytracingGlobals> g                    : register(b0);
@@ -49,9 +47,8 @@ RWStructuredBuffer<SamplePoint>         g_write_translucent_samples[] : register
 Buffer<float3>                          g_point_normals[]             : register(t0, space1);
 
 sampler BssrdfSampler : register(s0);
-/*
-* sampler TexSampler : register(s1);
-*/
+SamplerState TexSampler : register(s1);
+
 
 
 LocalRootSignature local_root_signature = {

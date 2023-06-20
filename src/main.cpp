@@ -245,7 +245,6 @@ int WINAPI wWinMain(
         Array<GeometryInstance> geometries = {};
         Array<Array<Vertex>> all_vertices = {};
         Array<Array<Index>>  all_indices = {};
-        //Array<std::unique_ptr<uint8_t[]>> all_textures = {};
 
         Array<MeshFilePaths> files = {};
         array_push(&files, MeshFilePaths{ "data/cornell/luminaire.obj", "" });
@@ -274,7 +273,6 @@ int WINAPI wWinMain(
 
         for (auto& v : all_vertices) array_free(&v); array_free(&all_vertices);
         for (auto& i : all_indices)  array_free(&i); array_free(&all_indices);
-        //for (auto& t : all_textures) t.release(); array_free(&all_textures);
         array_free(&geometries);
 
         // append instance

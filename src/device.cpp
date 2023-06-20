@@ -132,8 +132,6 @@ ID3D12Resource* create_texture(ID3D12GraphicsCommandList* cmd_list, char* filepa
     //load file
     int height = 1024, width = 1024, channel_num = 4; //4 channels RGBA
     unsigned char *img_data = stbi_load(filepath, &width, &height, &channel_num, channel_num);
-    //unsigned char* img_data = ;// malloc(height * height * channel_num * sizeof(unsigned char));
-    //std::vector<unsigned char> img_data = std::vector<unsigned char>(width * height * channel_num, '\0');
     //texture description
     D3D12_RESOURCE_DESC tex_desc = {0};
     tex_desc.MipLevels = 1;
@@ -176,55 +174,7 @@ ID3D12Resource* create_texture(ID3D12GraphicsCommandList* cmd_list, char* filepa
     UpdateSubresources(cmd_list, texture, upload, 0, 0, num_subresources, &tex_subresources);
     //upload to GPU
     cmd_list->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(texture, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
-    //define sampler
-    //create SRV
-    /*D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
-    srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srv_desc.Format = tex_desc.Format;
-    srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-    srv_desc.Texture2D.MipLevels = 1;
-    g_device->CreateShaderResourceView(texture, &srv_desc, desc_heap_handle);
-    desc_heap_handle.Offset();*/
-    return texture;
-    //create_or_check_capacity_of_temp_buffer(&upload_buffer, data.len, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_HEAP_TYPE_UPLOAD);
-
-    /*copy_to_upload_buffer(*upload_buffer, img_data);
-
-    // copy to default resource
-    D3D12_TEXTURE_COPY_LOCATION dst = CD3DX12_TEXTURE_COPY_LOCATION(texture);
-    D3D12_TEXTURE_COPY_LOCATION src = CD3DX12_TEXTURE_COPY_LOCATION(*upload_buffer, *footprint);
-
-    cmd_list->CopyTextureRegion(&dst, 0, 0, 0, &src, NULL);
-    cmd_list->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(texture, D3D12_RESOURCE_STATE_COPY_DEST, initial_state));
-    return texture;*/
-
-    //subresources
-
-    //sampler description
-
-
-    //default heap created here
-    /*if (filepath != NULL) {
-        //std::cout << filepath << std::endl;
-        //CHECK_RESULT(LoadDDSTextureFromFile(g_device, filepath, &texture, ddsData, subresources));
-        //auto value = LoadDDSTextureFromFile(g_device, filepath, &texture, ddsData, subresources);
-       CHECK_RESULT(value);
-       //create upload heap
-       const UINT64 buffer_size = GetRequiredIntermediateSize(texture, 0, static_cast<UINT>(subresources.size()));
-       ID3D12Resource* upload;
-       CHECK_RESULT(g_device->CreateCommittedResource(
-           &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-           &CD3DX12_RESOURCE_DESC::Buffer(buffer_size), D3D12_RESOURCE_STATE_GENERIC_READ,
-           NULL,
-           IID_PPV_ARGS(&upload)
-       ));
-       UpdateSubresources(cmd_list, texture, upload, 0, 0, (UINT)(subresources.size()), subresources.data());  //this does map()
-       cmd_list->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(texture, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE));
-       
-       
-    }*/
-    free(filepath);
-    //free(img_data);
+    free(img_data);
     return texture;
 }
 
